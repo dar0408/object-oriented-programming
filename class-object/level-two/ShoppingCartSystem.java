@@ -1,71 +1,102 @@
 // Program to Simulate a Shopping Cart
 // Problem Statement: Create a ShoppingCart class with attributes itemName, price, and quantity. 
 // - Add methods to add an item, remove an item, and display the total cost. 
+import java.util.ArrayList;
 
-// Class to represent an item in the shopping cart
-class ShoppingCart {
-    String itemName;  // Name of the item
-    double price;     // Price per unit of the item
-    int quantity;     // Quantity of the item in the cart
+// CartItem class to represent each item in the cart
+class CartItem {
+    String itemName;
+    double price;
+    int quantity;
 
-    // Constructor to initialize item details
-    ShoppingCart(String itemName, double price, int quantity) {
+    // Constructor to initialize CartItem attributes
+    CartItem(String itemName, double price, int quantity) {
         this.itemName = itemName;
         this.price = price;
         this.quantity = quantity;
     }
 
-    // Method to add/update an item in the cart
-    public void addItem(String itemName, double price, int quantity) {
-        this.itemName = itemName;
-        this.price = price;
-        this.quantity = quantity;
-    }
-
-    // Method to remove an item from the cart
-    public void removeItem() {
-        this.itemName = null; // Setting item name to null to indicate no item
-        this.price = 0;       // Reset price to 0
-        this.quantity = 0;    // Reset quantity to 0
-    }
-
-    // Method to display item details and total cost
-    public void display() {
-        if (itemName == null) {
-            System.out.println("No items in the cart.");
-        } else {
-            System.out.println("Item Name: " + itemName);
-            System.out.println("Price: " + price);
-            System.out.println("Quantity: " + quantity);
-            System.out.println("Total Cost: " + (price * quantity));
-        }
-        System.out.println("---------------------------");
+    // Method to calculate total cost for this item
+    public double totalCost() {
+        return price * quantity;
     }
 }
 
-// Main class to execute the program
-public class ShoppingCartSystem {
+// ShoppingCart class to manage cart operations
+class ShoppingCart {
+    ArrayList<CartItem> cartItems = new ArrayList<>();
+
+    // Constructor to initialize the cart
+    ShoppingCart() {
+        cartItems = new ArrayList<>();
+    }
+
+    // Method to add an item to the cart
+    public void addItem(String itemName, double price, int quantity) {
+        CartItem item = new CartItem(itemName, price, quantity);
+        cartItems.add(item);
+    }
+
+    // Method to remove an item from the cart by itemName 
+    public void removeItem(String itemName) {
+        for (int i = 0; i < cartItems.size(); i++) {
+            CartItem item = cartItems.get(i);
+            if (item.itemName.equals(itemName)) {
+                cartItems.remove(i);
+                System.out.println(itemName + " has been removed from the cart.");
+                return;
+            }
+        }
+        System.out.println(itemName + " not found in the cart.");
+    }
+
+    // Method to display all items in the cart
+    public void displayCart() {
+        if (cartItems.isEmpty()) {
+            System.out.println("The cart is empty.");
+            return;
+        }
+        System.out.println("Items in your cart:");
+        for (int i = 0; i < cartItems.size(); i++) {
+            CartItem item = cartItems.get(i);
+            System.out.println(item.itemName + " - Price: " + item.price + " Quantity: " + item.quantity);
+        }
+    }
+
+    // Method to calculate the total cost of the cart
+    public double totalCost() {
+        double total = 0.0;
+        for (int i = 0; i < cartItems.size(); i++) {
+            CartItem item = cartItems.get(i);
+            total += item.totalCost();
+        }
+        return total;
+    }
+}
+
+// Main class to test the shopping cart functionality
+public class ShoppingCartSimulation {
     public static void main(String[] args) {
-        // Creating objects with initial items
-        ShoppingCart cart1 = new ShoppingCart("Laptop", 50000, 2);
-        ShoppingCart cart2 = new ShoppingCart("Mobile", 20000, 3);
+        ShoppingCart cart = new ShoppingCart();
 
-        // Displaying initial cart details
-        cart1.display();
-        
-        // Adding a new item to the first cart
-        cart1.addItem("Mobile", 20000, 3);
-        cart1.display();
+        // Adding items to the cart
+        cart.addItem("Apple", 50.0, 3);
+        cart.addItem("Bread", 30.0, 2);
+        cart.addItem("Milk", 20.0, 1);
 
-        // Removing an item from the first cart
-        cart1.removeItem();
-        cart1.display();
+        // Displaying the cart
+        cart.displayCart();
 
-        // Displaying the second cart details
-        cart2.display();
-        
-        // Updating the second cart with a new item
-        cart2.addItem("Laptop", 50000, 2);
-        cart2.display();
+        // Showing total cost
+        System.out.println("Total cost: " + cart.totalCost());
+
+        // Removing an item from the cart
+        cart.removeItem("Bread");
+
+        // Displaying the cart after removing an item
+        cart.displayCart();
+
+        // Showing total cost after removal
+        System.out.println("Total cost after removal: " + cart.totalCost());
     }
 }
